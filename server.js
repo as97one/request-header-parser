@@ -1,29 +1,16 @@
 var express = require('express')
 var strftime = require('strftime')
+var ip = require("ip")
+var platform = require("platform")
 var app = express()
-
-app.get('/:date', function (req, res) {
-    var param_date = req.params.date
-    var is_int = parseInt(req.params.date)
-    if (is_int){
-        param_date*=1000
-    } 
-    var potential_date = new Date(param_date)
-    
+app.get('/whoami', function (req, res) {
+    // var lang = require("get-browser-language")()
+    console.log(req.acceptsLanguages)
     var to_return = {
-            unix: null,
-            natural: null
+            ip: ip.address(),
+            language: req.acceptsLanguages()[0],
+            os: platform.os
         }
-        
-    if (Date.parse(potential_date)) {
-        to_return['unix']=parseInt(req.params.date)
-        to_return['natural']=req.params.date
-        if (is_int){
-            to_return['natural']=strftime('%B %e, %Y', potential_date)
-        }else{
-            to_return['unix']=potential_date.getTime()/1000
-        }
-    }
     
     res.send(JSON.stringify(to_return))
 })
